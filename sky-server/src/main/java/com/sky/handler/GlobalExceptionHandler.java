@@ -4,6 +4,7 @@ import com.sky.constant.MessageConstant;
 import com.sky.exception.BaseException;
 import com.sky.result.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -26,20 +27,24 @@ public class GlobalExceptionHandler {
     }
 
 
+    /**
+     * 捕获数据库唯一约束冲突（如新增员工时用户名重复）
+     * @param ex
+     * @return
+     */
     @ExceptionHandler
-    public Result SQLIntegrityConstraintViolationException(Exception ex){
-        //        Duplicate entry '键盘' for key 'employee.idx_username'
+    public Result duplicateKeyExceptionHandler(DuplicateKeyException ex){
+        log.error("异常信息：{}", ex.getMessage());
+        // 完整报错里有一段：Duplicate entry '键盘' for key 'employee.idx_username'
         String message = ex.getMessage();
-        if (message.contains("Duplicate entry")) {
-            String[] msgs = message.split("");
-            log.info(msgs[0], msgs[1], msgs[2],  msgs[3]);
-            String username = msgs[2];
-            return Result.error(username + MessageConstant.ALREADY_EXISTS);
+        if (message != null && message.contains("Duplicate entry")) {
+            // "Duplicate entry " 后面紧跟的就是重复的值，用下标截取出来
+            int start = message.indexOf("Duplicate entry") + "Duplicate entry ".length();
+            int end = message.indexOf(" for key", start);
+            String duplicateValue = message.substring(start, end).replace("'", "");
+            return Result.error(duplicateValue + MessageConstant.ALREADY_EXISTS);
         }
-        else
-        {
-            return Result.error(MessageConstant.UNKNOWN_ERROR);
-        }
+        return Result.error(MessageConstant.UNKNOWN_ERROR);
     }
 
 }

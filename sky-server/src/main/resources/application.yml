@@ -3,9 +3,16 @@ server:
 
 spring:
   profiles:
-    active: dev
+    # dev 是通用开发配置，local 存放真实密钥（不提交git），local 后加载会覆盖 dev
+    active: dev,local
   main:
     allow-circular-references: true
+  servlet:
+    multipart:
+      # 单个上传文件的最大值（Spring Boot 默认 1MB，图片一般都会超过）
+      max-file-size: 10MB
+      # 单次请求的最大值（一次请求可能携带多个文件）
+      max-request-size: 100MB
   datasource:
     druid:
       driver-class-name: ${sky.datasource.driver-class-name}

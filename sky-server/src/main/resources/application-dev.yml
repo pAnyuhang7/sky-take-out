@@ -6,3 +6,13 @@ sky:
     database: sky_take_out
     username: root
     password: 123456
+  alioss:
+    # 真实的密钥配置在 application-local.yml（本地文件，不提交到 git）
+    # Endpoint，如：oss-cn-beijing.aliyuncs.com（不带 https:// 前缀）
+    endpoint: 填写你的Endpoint
+    # AccessKey ID
+    access-key-id: 填写你的AccessKey ID
+    # AccessKey Secret
+    access-key-secret: 填写你的AccessKey Secret
+    # Bucket 名称
+    bucket-name: 填写你的Bucket名称

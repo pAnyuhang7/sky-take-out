@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 /**
  * 全局异常处理器，处理项目中抛出的业务异常
@@ -45,6 +46,17 @@ public class GlobalExceptionHandler {
             return Result.error(duplicateValue + MessageConstant.ALREADY_EXISTS);
         }
         return Result.error(MessageConstant.UNKNOWN_ERROR);
+    }
+
+    /**
+     * 捕获文件上传超限异常（上传的文件超过了 spring.servlet.multipart.max-file-size 限制）
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler
+    public Result maxUploadSizeExceptionHandler(MaxUploadSizeExceededException ex){
+        log.error("异常信息：{}", ex.getMessage());
+        return Result.error("上传文件过大，请上传 10MB 以内的文件");
     }
 
 }

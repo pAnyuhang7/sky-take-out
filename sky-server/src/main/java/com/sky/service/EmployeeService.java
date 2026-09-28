@@ -33,4 +33,8 @@ public interface EmployeeService {
      * 更新员工账号状态值
      */
     void updateEmployeeStatus(Integer status , Long id );
+
+    Employee getEmployeeById(Long id);
+
+    void updateEmployee(EmployeeDTO employeeDTO);
 }
